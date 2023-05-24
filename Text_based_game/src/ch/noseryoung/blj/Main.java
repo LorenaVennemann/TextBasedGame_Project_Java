@@ -15,22 +15,33 @@ public class Main {
     Room kitchen = new Room("Kitchen", "You are in the kitchen.");
     Room bathroom = new Room("Bathroom", "You are in the bathroom.");
     Room bedroom = new Room("Bedroom", "You are in the bedroom.");
+    Room diningroom = new Room("Diningroom", "You are in the diningroom.");
 
     livingRoom.addExit(kitchen);
     livingRoom.addExit(bathroom);
     livingRoom.addExit(bedroom);
     kitchen.addExit(livingRoom);
+    kitchen.addExit(diningroom);
     bathroom.addExit(livingRoom);
     bedroom.addExit(livingRoom);
+    diningroom.addExit(kitchen);
 
     livingRoom.addItem(new Item("TV_Remote", "A remote for the TV.", true));
     kitchen.addItem(new Item("Knife", "A sharp knife.", true));
     bathroom.addItem(new Item("Toothbrush", "A toothbrush.", true));
     bedroom.addItem(new Item("Key", "A key to unlock a door.", true));
+    diningroom.addItem(new Item("Apple", "A Apple, you can eat it.", true));
 
     player.setCurrentRoom(livingRoom);
 
-    System.out.println("Welcome!");
+    System.out.println("\n" +
+        "   ____      _      __  __  U _____ u \n" +
+        "U /\"___|uU  /\"\\  uU|' \\/ '|u\\| ___\"|/ \n" +
+        "\\| |  _ / \\/ _ \\/ \\| |\\/| |/ |  _|\"   \n" +
+        " | |_| |  / ___ \\  | |  | |  | |___   \n" +
+        "  \\____| /_/   \\_\\ |_|  |_|  |_____|  \n" +
+        "  _)(|_   \\\\    >><<,-,,-.   <<   >>  \n" +
+        " (__)__) (__)  (__)(./  \\.) (__) (__) \n");
 
     while (true) {
       System.out.println("\n" + player.getCurrentRoom().getDescription());
