@@ -1,46 +1,69 @@
 package ch.noseryoung.blj;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
 
 public class Room {
-  private String name_;
-  private String[] neighbors_;
-  private String description_;
-  private HashMap<String, Item> items_ = new HashMap<String, Item>();
+  private String name;
+  private String description;
+  private boolean locked;
+  private int keyCode;
+  private ArrayList<Room> exits;
+  private ArrayList<Item> items;
 
-  public Room(String name, String description, String[] neighbors, HashMap<String, Item> items){
-    name_ = name;
-    description_ = description;
-    neighbors_ = neighbors;
-    
-    setItems(items);
+  public Room(String name, String description) {
+    this.name = name;
+    this.description = description;
+    this.locked = false;
+    this.exits = new ArrayList<>();
+    this.items = new ArrayList<>();
   }
 
-  private void setItems(HashMap<String, Item> items) {
-    for(Map.Entry<String, Item> elt : items.entrySet()){
-      if (elt.getValue().getLocation().equals(name_)){
-        items_.put(elt.getKey(), elt.getValue());
-      }
-      }
-    }
-  public void look() {
-    System.out.println(description_);
-    System.out.println("can exit to the ");
+  public Room(String name, String description, boolean locked, int keyCode) {
+    this.name = name;
+    this.description = description;
+    this.locked = locked;
+    this.keyCode = keyCode;
+    this.exits = new ArrayList<>();
+    this.items = new ArrayList<>();
+  }
 
-    if (!neighbors_[0].equals("-"))
-      System.out.println("NORTH, ");
+  public String getName() {
+    return name;
+  }
 
-    if (!neighbors_[1].equals("-"))
-      System.out.println("SOUTH, ");
+  public String getDescription() {
+    return description;
+  }
 
-    if (!neighbors_[2].equals("-"))
-      System.out.println("EAST, ");
+  public boolean getLocked() {
+    return locked;
+  }
 
-    if (!neighbors_[3].equals("-"))
-      System.out.println("WEST, ");
+  public int getKeyCode() {
+    return keyCode;
+  }
+
+  public ArrayList<Room> getExits() {
+    return exits;
+  }
+
+  public void addExit(Room room) {
+    exits.add(room);
+  }
+
+  public ArrayList<Item> getItems() {
+    return items;
+  }
+
+  public void addItem(Item item) {
+    items.add(item);
+  }
+
+  public void removeItem(Item item) {
+    items.remove(item);
+  }
+
+  public boolean canUnlock(Item item) {
+    return item.canUnlock(this);
   }
 }
-
-
-
