@@ -6,7 +6,8 @@ public class Room {
   private String name;
   private String description;
   private boolean locked;
-  private int keyCode;
+
+  private  int keyCode;
   private ArrayList<Room> exits;
   private ArrayList<Item> items;
 
@@ -65,5 +66,13 @@ public class Room {
 
   public boolean canUnlock(Item item) {
     return item.canUnlock(this);
+  }
+
+  public void setLocked(boolean locked) {
+    this.locked = locked;
+  }
+
+  public void setKeyCode(int code) {
+    this.keyCode = code;
   }
 }

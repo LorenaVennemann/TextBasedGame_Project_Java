@@ -1,6 +1,5 @@
 package ch.noseryoung.blj;
 
-
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -10,12 +9,12 @@ public class Main {
     Player player = new Player("Player");
     Score score = new Score();
 
-
     Room livingRoom = new Room("Living Room", "You are in the living room.");
     Room kitchen = new Room("Kitchen", "You are in the kitchen.");
     Room bathroom = new Room("Bathroom", "You are in the bathroom.");
     Room bedroom = new Room("Bedroom", "You are in the bedroom.");
-    Room diningroom = new Room("Diningroom", "You are in the diningroom.");
+    Room diningroom = new Room("diningroom", "You are in the diningroom.");
+    Room outside = new Room("Outside", "You are outside the house. Congratulations, you won!");
 
     livingRoom.addExit(kitchen);
     livingRoom.addExit(bathroom);
@@ -25,11 +24,19 @@ public class Main {
     bathroom.addExit(livingRoom);
     bedroom.addExit(livingRoom);
     diningroom.addExit(kitchen);
+    kitchen.addExit(outside);
+
+    kitchen.setLocked(true);
+    outside.setLocked(true);
+    Item key = new Item("Key", "A key to unlock a door.", true);
+    key.setCode(1);
+    kitchen.setKeyCode(key.getCode());
+    outside.setKeyCode(key.getCode());
 
     livingRoom.addItem(new Item("TV_Remote", "A remote for the TV.", true));
     kitchen.addItem(new Item("Knife", "A sharp knife.", true));
     bathroom.addItem(new Item("Toothbrush", "A toothbrush.", true));
-    bedroom.addItem(new Item("Key", "A key to unlock a door.", true));
+    bedroom.addItem(key);
     diningroom.addItem(new Item("Apple", "A Apple, you can eat it.", true));
 
     player.setCurrentRoom(livingRoom);
@@ -42,7 +49,7 @@ public class Main {
         "  \\____| /_/   \\_\\ |_|  |_|  |_____|  \n" +
         "  _)(|_   \\\\    >><<,-,,-.   <<   >>  \n" +
         " (__)__) (__)  (__)(./  \\.) (__) (__) \n");
-
+    System.out.println("Your goal is to find the key and escape the house");
     while (true) {
       System.out.println("\n" + player.getCurrentRoom().getDescription());
 
@@ -63,6 +70,22 @@ public class Main {
         boolean foundExit = false;
         for (Room exit : player.getCurrentRoom().getExits()) {
           if (exit.getName().equalsIgnoreCase(destination)) {
+            if (exit.getLocked()) {
+              Item keyInInventory = null;
+              for (Item item : player.getItems()) {
+                if (item.getName().equals("Key") && item.getCode() == exit.getKeyCode()) {
+                  keyInInventory = item;
+                  break;
+                }
+              }
+              if (keyInInventory != null) {
+                exit.setLocked(false);
+                System.out.println("You unlock the " + exit.getName() + " with the " + keyInInventory.getName() + ".");
+              } else {
+                System.out.println("The " + exit.getName() + " is locked. You need a key to unlock it.");
+                continue;
+              }
+            }
             player.setCurrentRoom(exit);
             System.out.println("You go to the " + exit.getName() + ".");
             foundExit = true;
@@ -97,6 +120,17 @@ public class Main {
             score.increaseScore(20);
             System.out.println("You gain 20 points.");
             player.getItems().remove(item);
+
+            if (itemName.equalsIgnoreCase("Key")) {
+              for (Room exit : player.getCurrentRoom().getExits()) {
+                if (exit.getName().equals("Outside") && exit.getLocked() && item.getCode() == exit.getKeyCode()) {
+                  exit.setLocked(false);
+                  System.out.println("You unlock the " + exit.getName() + " with the " + itemName + ".");
+                  System.out.println("You win!");
+                  System.exit(0);
+                }
+              }
+            }
             break;
           }
         }
@@ -147,7 +181,7 @@ public class Main {
         System.out.println("Invalid input.");
       }
 
-      if (player.getCurrentRoom().getName().equals("Kitchen") && player.getItems().contains(new Item("Knife", "", false))) {
+      if (player.getCurrentRoom().getName().equals("Outside")) {
         System.out.println("You win!");
         break;
       }
